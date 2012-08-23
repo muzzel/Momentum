@@ -12,18 +12,23 @@ package Momentum
 	public real dt = 1.0/32.0
 	timer loopTimer
 	
+	public function loopStart()
+		loopTimer.startPeriodic(dt, function mainLoop)
+	
+	public function loopPause()
+		loopTimer.pause()
 	
 	public function setDt(real value)
 		dt = value
-		loopTimer.pause()
-		loopTimer.startPeriodic(dt, function mainLoop)
+		loopPause()
+		loopStart()
 	
-	public function mainLoop()
+	function mainLoop()
 		print("Particles: " + particles.getSize().toString())
 		
 		// calculate position
-		for MParticle particle in particles
-			particle.loopCalcPos()
+		for MParticle particle1 in particles
+			particle1.loopCalcPos()
 		
 		// move if not sleeping
 		for MParticle particle2 in particles
@@ -52,6 +57,5 @@ package Momentum
 
 	init
 		loopTimer = CreateTimer()
-		loopTimer.startPeriodic(dt, function mainLoop)
 		
 endpackage

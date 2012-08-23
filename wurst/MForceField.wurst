@@ -1,0 +1,60 @@
+package MForceField
+	import MParticle
+	import Vectors
+	import Lists
+	
+	public LinkedList<MForceField> forceFields
+	
+	public class MForceField
+		construct()
+			forceFields.add(this)
+			
+		ondestroy
+			forceFields.remove(this)
+			
+		function getForce(MParticle p) returns vec3
+			printWarning("MForceField.getForce(): No implementation available in base class")
+			return vec3(0., 0., 0.)
+			
+	/** PRESET: Gravitation force field **/
+	public class MGravityForceField extends MForceField
+		vec3 f
+		
+		construct(vec3 f)
+			super()
+			this.f = f
+			
+		override function getForce(MParticle p) returns vec3
+			return f //TODO: missing mass factor
+	
+	/** PRESET: Constant radial force field **/
+	public class MConstRadialForceField extends MForceField
+		vec3 pos
+		real value
+		
+		// Positive value points inwards
+		construct(vec3 pos, real value)
+			super()
+			this.pos = pos
+			this.value = value
+				
+		override function getForce(MParticle p) returns vec3
+			return (this.pos - p.getPos()).setLength(value)
+	
+	/** PRESET: Spring radial force field **/
+	public class MSpringRadialForceField extends MForceField
+		vec3 pos
+		real rate
+		
+		construct(vec3 pos, real rate)
+			super()
+			this.pos = pos
+			this.rate = rate
+			
+		override function getForce(MParticle p) returns vec3
+			return (p.getPos() - this.pos) * ( -rate)
+	
+	
+	init
+		forceFields = new LinkedList<MForceField>()
+endpackage

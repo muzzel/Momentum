@@ -1,0 +1,44 @@
+package MConstraint
+	import Momentum
+	import MParticle
+	import Lists
+	import Vectors
+	
+	public LinkedList<MConstraint> constraints
+
+	public class MConstraint
+		MParticle particleA
+		MParticle particleB
+		
+		construct(MParticle particleA, MParticle particleB)
+			constraints.add(this)
+			this.particleA = particleA
+			this.particleB = particleB
+		
+		ondestroy
+			constraints.remove(this)
+		
+		function solve()
+			printWarning("MConstraint.solve(): No implementation available in base class")
+	
+	/** PRESET: Distance constraint **/
+	public class MDistanceConstraint extends MConstraint
+		real distance
+		
+		construct(MParticle particleA, MParticle particleB, real distance)
+			super(particleA, particleB)
+			this.distance = distance
+		
+		override function solve()
+			vec3 n = particleB.getPos() - particleA.getPos()
+			vec3 nNorm = n.norm()
+			vec3 i = nNorm * (((particleB.getVel() - particleA.getVel()).dot(nNorm) + (n.length() - distance) / dt) / (particleA.getInvMass() + particleB.getInvMass()))
+			particleA.setVel(particleA.getVel() + i * particleA.getInvMass())
+			particleB.setVel(particleB.getVel() - i * particleB.getInvMass())
+		
+	
+	init
+		constraints = new LinkedList<MConstraint>()
+endpackage
+
+// TODO: particles should hold a list of constraints?

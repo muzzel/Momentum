@@ -1,0 +1,39 @@
+package MForce
+	import MParticle
+	import Vectors
+	import Lists
+	
+	public LinkedList<MForce> forces
+	
+	public class MForce
+		construct()
+			forces.add(this)
+		
+		ondestroy
+			forces.remove(this)
+		
+		function apply()
+			printWarning("MForce.apply(): No implementation available in base class")
+	
+	
+	/** PRESET: Spring force between two particles **/
+	public class MSpringForce2 extends MForce
+		MParticle particleA
+		MParticle particleB
+		real rate
+		
+		// Positive value points inwards
+		construct(MParticle particleA, MParticle particleB, real rate)
+			super()
+			this.particleA = particleA
+			this.particleB = particleB
+			this.rate = rate
+				
+		override function apply()
+			vec3 f = (particleA.getPos() - particleB.getPos()) * (rate)
+			particleA.addForce(f * -1.)
+			particleB.addForce(f)
+
+	init
+		forces = new LinkedList<MForce>()
+endpackage

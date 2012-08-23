@@ -1,0 +1,97 @@
+package MParticle
+	import Momentum
+	import Vectors
+	import Lists
+	import Terrain
+	
+	public LinkedList<MParticle> particles
+	
+	public class MParticle
+		vec3 pos
+		vec3 vel
+		vec3 forces
+		unit u
+		real invMass
+		boolean sleeping
+		
+		// getter/setter
+		function getPos() returns vec3
+			return pos
+		
+		function setPos(vec3 pos)
+			this.pos = pos
+		
+		function getVel() returns vec3
+			return vel
+		
+		function setVel(vec3 vel)
+			this.vel = vel
+		
+		function getForces() returns vec3
+			return forces
+		
+		function setForces(vec3 forces)
+			this.forces = forces
+		
+		function addForce(vec3 f)
+			this.forces = this.forces + f
+		
+		function getUnit() returns unit
+			return u
+		
+		function setUnit(unit u)
+			this.u = u
+		
+		function getInvMass() returns real
+			return invMass
+		
+		function setInvMass(real invMass)
+			this.invMass = invMass
+		
+		function isSleeping() returns boolean
+			return sleeping
+		
+		// constr
+		construct(unit u, vec3 pos, vec3 vel, real invMass)
+			setUnit(u)
+			setPos(pos)
+			setVel(vel)
+			setInvMass(invMass)
+			sleeping = false
+			u.addAbility(HEIGHT_ENABLER)
+			u.removeAbility(HEIGHT_ENABLER)
+			particles.add(this)
+		
+		ondestroy
+			particles.remove(this)
+			
+		// loop
+		function loopCalcPos()
+			setPos(getPos() + (getVel() * (dt)))
+			if(getVel() != vec3(0., 0., 0.))
+				sleeping = false
+			else
+				sleeping = true
+		
+		function loopMove()
+			u.setXY(pos.x, pos.y)
+			u.setFlyHeight(pos.z - getTerrainZ(pos.x, pos.y), 0)
+		
+		function loopCalcVel()
+			vec3 acc = forces * invMass
+			setVel(getVel() + (acc * dt))
+			
+	
+	/** PRESET: Controllable particle **/
+	public class MControllableParticle extends MParticle
+		construct(unit u, vec3 pos, vec3 vel, real invMass)
+			super(u, pos, vel, invMass)
+			
+		override function getPos() returns vec3
+			vec2 p = u.getPos()
+			return vec3(p.x, p.y, 0.) //TODO: this.pos.z)
+			
+			
+	init
+		particles = new LinkedList<MParticle>()
+endpackage

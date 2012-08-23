@@ -1,0 +1,57 @@
+package Momentum
+	// Momentum packages
+	import public MParticle
+	import public MForce
+	import public MForceField
+	import public MConstraint
+
+	// Other stuff
+	import TimerUtils
+	import Vectors
+	
+	public real dt = 1.0/32.0
+	timer loopTimer
+	
+	
+	public function setDt(real value)
+		dt = value
+		loopTimer.pause()
+		loopTimer.startPeriodic(dt, function mainLoop)
+	
+	public function mainLoop()
+		print("Particles: " + particles.getSize().toString())
+		
+		// calculate position
+		for MParticle particle in particles
+			particle.loopCalcPos()
+		
+		// move if not sleeping
+		for MParticle particle2 in particles
+			if not particle2.isSleeping()
+				particle2.loopMove()
+		
+		// apply force fields
+		for MParticle particle3 in particles
+			vec3 sumForces = vec3(0., 0., 0.)
+			for MForceField ff2 in forceFields
+				vec3 f = ff2.getForce(particle3)
+				sumForces = sumForces + f
+			particle3.setForces(sumForces)
+		
+		// apply forces
+		for MForce force1 in forces
+			force1.apply()
+		
+		// calculate velocity
+		for MParticle particle4 in particles
+			particle4.loopCalcVel()
+			
+		// apply constraints
+		for MConstraint constraint1 in constraints
+			constraint1.solve()
+
+	init
+		loopTimer = CreateTimer()
+		loopTimer.startPeriodic(dt, function mainLoop)
+		
+endpackage

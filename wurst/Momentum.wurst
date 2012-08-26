@@ -11,12 +11,18 @@ package Momentum
 	
 	public real dt = 1.0/32.0
 	timer loopTimer
+	boolean paused = true
 	
 	public function loopStart()
+		paused = false
 		loopTimer.startPeriodic(dt, function mainLoop)
 	
 	public function loopPause()
+		paused = true
 		loopTimer.pause()
+		
+	public function isLoopPaused() returns boolean
+		return paused
 	
 	public function setDt(real value)
 		dt = value

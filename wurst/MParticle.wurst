@@ -21,6 +21,9 @@ package MParticle
 		function setPos(vec3 pos)
 			this.pos = pos
 		
+		function adoptDummyPos()
+			this.pos = vec3(u.getX(), u.getY(), 0.)
+		
 		function getVel() returns vec3
 			return vel
 		
@@ -75,7 +78,7 @@ package MParticle
 		
 		function loopMove()
 			u.setXY(pos.x, pos.y)
-			u.setFlyHeight(pos.z - getTerrainZ(pos.x, pos.y), 0)
+			//u.setFlyHeight(pos.z - getTerrainZ(pos.x, pos.y), 0) //TODO
 		
 		function loopCalcVel()
 			vec3 acc = forces * invMass

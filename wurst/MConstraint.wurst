@@ -35,6 +35,23 @@ package MConstraint
 			vec3 i = nNorm * (((particleB.getVel() - particleA.getVel()).dot(nNorm) + (n.length() - distance) / dt) / (particleA.getInvMass() + particleB.getInvMass()))
 			particleA.setVel(particleA.getVel() + i * particleA.getInvMass())
 			particleB.setVel(particleB.getVel() - i * particleB.getInvMass())
+			
+			
+	/** PRESET: Maximum distance constraint **/
+	public class MMaxDistanceConstraint extends MConstraint
+		real distanceMax
+		
+		construct(MParticle particleA, MParticle particleB, real distanceMax)
+			super(particleA, particleB)
+			this.distanceMax = distanceMax
+		
+		override function solve()
+			vec3 n = particleB.getPos() - particleA.getPos()
+			vec3 nNorm = n.norm()
+			if n.length() > distanceMax
+				vec3 i = nNorm * (((particleB.getVel() - particleA.getVel()).dot(nNorm) + (n.length() - distanceMax) / dt) / (particleA.getInvMass() + particleB.getInvMass()))
+				particleA.setVel(particleA.getVel() + i * particleA.getInvMass())
+				particleB.setVel(particleB.getVel() - i * particleB.getInvMass())
 		
 	
 	init

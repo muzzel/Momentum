@@ -1,16 +1,17 @@
 package MParticle
 	import Momentum
 	import Vectors
-	import Lists
 	import Terrain
+	import Lists
+
 	
-	public LinkedList<MParticle> particles
+	public LinkedList<MParticle> particles = new LinkedList<MParticle>()
 	
 	public class MParticle
 		vec3 pos
 		vec3 vel
 		vec3 forces
-		unit u
+		unit actor
 		real invMass
 		boolean sleeping
 		
@@ -22,7 +23,7 @@ package MParticle
 			this.pos = pos
 		
 		function adoptDummyPos()
-			this.pos = vec3(u.getX(), u.getY(), 0.)
+			this.pos = vec3(actor.getX(), actor.getY(), 0.)
 		
 		function getVel() returns vec3
 			return vel
@@ -40,10 +41,10 @@ package MParticle
 			this.forces = this.forces + f
 		
 		function getUnit() returns unit
-			return u
+			return actor
 		
-		function setUnit(unit u)
-			this.u = u
+		function setUnit(unit actor)
+			this.actor = actor
 		
 		function getInvMass() returns real
 			return invMass
@@ -55,46 +56,45 @@ package MParticle
 			return sleeping
 		
 		// constr
-		construct(unit u, vec3 pos, vec3 vel, real invMass)
-			setUnit(u)
+		construct(unit actor, vec3 pos, vec3 vel, real invMass)
+			setUnit(actor)
 			setPos(pos)
 			setVel(vel)
 			setInvMass(invMass)
 			sleeping = false
-			u.addAbility(HEIGHT_ENABLER)
-			u.removeAbility(HEIGHT_ENABLER)
+			actor.addAbility(HEIGHT_ENABLER)
+			actor.removeAbility(HEIGHT_ENABLER)
 			particles.add(this)
-		
-		ondestroy
-			particles.remove(this)
 			
 		// loop
 		function loopCalcPos()
 			setPos(getPos() + (getVel() * (dt)))
-			if(getVel() != vec3(0., 0., 0.))
+			if(getVel().lengthSquared() >= 1.)
 				sleeping = false
 			else
 				sleeping = true
 		
 		function loopMove()
-			u.setXY(pos.x, pos.y)
-			//u.setFlyHeight(pos.z - getTerrainZ(pos.x, pos.y), 0) //TODO
+			actor.setXY(pos.x, pos.y)
+			//actor.setFlyHeight(pos.z - getTerrainZ(pos.x, pos.y), 0) //TODO
 		
 		function loopCalcVel()
 			vec3 acc = forces * invMass
 			setVel(getVel() + (acc * dt))
 			
+		ondestroy
+			particles.remove(this)
+			
 	
 	/** PRESET: Controllable particle **/
 	public class MControllableParticle extends MParticle
-		construct(unit u, vec3 pos, vec3 vel, real invMass)
-			super(u, pos, vel, invMass)
+		construct(unit actor, vec3 pos, vec3 vel, real invMass)
+			super(actor, pos, vel, invMass)
 			
 		override function getPos() returns vec3
-			vec2 p = u.getPos()
+			vec2 p = actor.getPos()
 			return vec3(p.x, p.y, 0.) //TODO: this.pos.z)
 			
 			
-	init
-		particles = new LinkedList<MParticle>()
+
 endpackage

@@ -5,16 +5,15 @@ package MForceField
 	
 	public LinkedList<MForceField> forceFields
 	
-	public class MForceField
+	public abstract class MForceField
 		construct()
 			forceFields.add(this)
 			
 		ondestroy
 			forceFields.remove(this)
 			
-		function getForce(MParticle p) returns vec3
-			printWarning("MForceField.getForce(): No implementation available in base class")
-			return vec3(0., 0., 0.)
+		abstract function getForce(MParticle p) returns vec3
+
 			
 	/** PRESET: Gravitation force field **/
 	public class MGravityForceField extends MForceField

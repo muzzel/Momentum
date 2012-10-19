@@ -5,15 +5,15 @@ package MForce
 	
 	public LinkedList<MForce> forces
 	
-	public class MForce
+	public abstract class MForce
 		construct()
 			forces.add(this)
 		
 		ondestroy
 			forces.remove(this)
 		
-		function apply()
-			printWarning("MForce.apply(): No implementation available in base class")
+		abstract function apply()
+
 	
 	
 	/** PRESET: Spring force between two particles **/

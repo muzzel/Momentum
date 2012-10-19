@@ -6,7 +6,7 @@ package MConstraint
 	
 	public LinkedList<MConstraint> constraints
 
-	public class MConstraint
+	public abstract class MConstraint
 		MParticle particleA
 		MParticle particleB
 		
@@ -18,8 +18,8 @@ package MConstraint
 		ondestroy
 			constraints.remove(this)
 		
-		function solve()
-			printWarning("MConstraint.solve(): No implementation available in base class")
+		abstract function solve()
+
 	
 	/** PRESET: Distance constraint **/
 	public class MDistanceConstraint extends MConstraint

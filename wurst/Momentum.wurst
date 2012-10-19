@@ -9,7 +9,7 @@ package Momentum
 	import TimerUtils
 	import Vectors
 	
-	public real dt = 1.0/32.0
+	public real dt = 0.03215000
 	timer loopTimer
 	boolean paused = true
 	
@@ -32,34 +32,37 @@ package Momentum
 	function mainLoop()
 		print("Particles: " + particles.getSize().toString())
 		
-		// calculate position
-		for MParticle particle1 in particles
-			particle1.loopCalcPos()
-		
-		// move if not sleeping
-		for MParticle particle2 in particles
-			if not particle2.isSleeping()
-				particle2.loopMove()
-		
-		// apply force fields
-		for MParticle particle3 in particles
-			vec3 sumForces = vec3(0., 0., 0.)
-			for MForceField ff2 in forceFields
-				vec3 f = ff2.getForce(particle3)
-				sumForces = sumForces + f
-			particle3.setForces(sumForces)
-		
-		// apply forces
-		for MForce force1 in forces
-			force1.apply()
-		
-		// calculate velocity
-		for MParticle particle4 in particles
-			particle4.loopCalcVel()
+		if particles.getSize() > 0
+			// calculate position
+			for MParticle particle1 in particles
+				particle1.loopCalcPos()
+
+
+			// move if not sleeping
+			for MParticle particle2 in particles
+				if not particle2.isSleeping()
+					particle2.loopMove()
+
 			
-		// apply constraints
-		for MConstraint constraint1 in constraints
-			constraint1.solve()
+			// apply force fields
+			for MParticle particle3 in particles
+				vec3 sumForces = vec3(0., 0., 0.)
+				for MForceField ff2 in forceFields
+					vec3 f = ff2.getForce(particle3)
+					sumForces = sumForces + f
+				particle3.setForces(sumForces)
+
+			// apply forces
+			for MForce force1 in forces
+				force1.apply()
+			
+			// calculate velocity
+			for MParticle particle4 in particles
+				particle4.loopCalcVel()
+
+			// apply constraints
+			for MConstraint constraint1 in constraints
+				constraint1.solve()
 
 	init
 		loopTimer = CreateTimer()
